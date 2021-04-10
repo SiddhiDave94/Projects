@@ -1,0 +1,160 @@
+﻿
+<head runat="server">
+    <style>
+        .btn-space {
+            margin-left: -5%;
+            background-color: cornflowerblue;
+            font-size: large;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="~/Scripts/angular.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.22/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script type="text/javascript">
+
+        var app = angular.module("CoursePage", []);
+        app.controller("Coursecntrl", function ($scope, $http, $filter) {
+            debugger;
+
+            //Get All  Data
+            $scope.GetCourseAllData = function () {
+                $http({
+                    method: "get",
+                    url: "https://localhost:44363/College/Get_AllCourse"
+                }).then(function (response) {
+                    $scope.course = response.data;
+                }, function () {
+                    alert("Error Occur");
+                })
+            };
+
+            //print div data
+            $scope.printDiv = function (divName) {
+                var printContents = document.getElementById(divName).innerHTML;
+                var popupWin = window.open('', '_blank', 'width=300,height=300');
+                popupWin.document.open();
+                popupWin.document.write('<html><head><link rel="stylesheet" type="text/css" href="style.css" /></head><body onload="window.print()">' + printContents + '</body></html>');
+                popupWin.document.close();
+            }
+
+            //export div data
+            $scope.getDatetime = null;
+            $scope.exportdiv = function (divName) {
+                html2canvas(document.getElementById(divName), {
+                    onrendered: function (canvas) {
+                        var data = canvas.toDataURL();
+                        var docDefinition = {
+                            content: [{
+                                image: data,
+                                width: 500
+                            }]
+                        };
+                        //getDatetime = new Date();
+                        var date = new Date();
+                        getDatetime = $filter('date')(new Date(), 'HH:mm:ss');
+                        pdfMake.createPdf(docDefinition).download(getDatetime + "CollegeData.pdf");
+                    }
+                });
+            }
+
+        });
+
+    </script>
+</body>
+
+<div ng-app="CoursePage">
+    <div ng-controller="Coursecntrl" ng-init="GetCourseAllData()" class="divList">
+
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Institute Finder</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">About US <span class="sr-only">(current)</span></a>
+                    </li>
+
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#" ng-click="printDiv('CourseData');">Print Data <span class="sr-only">(current)</span></a>
+                    </li>
+
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#" ng-click="exportdiv('CourseData')">Export Data <span class="sr-only">(current)</span></a>
+                    </li>
+
+                </ul>
+                <form class="form-inline my-2 my-lg-0">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" ng-model="searchText">
+                </form>
+            </div>
+        </nav>
+
+        <div><br /> <br /></div>
+
+        <div name ="CourseData" id="CourseData">
+            <table cellpadding="12" class="table table-bordered table-hover">
+                <tr>
+                    <td>
+                        <b>CourseID</b>
+                    </td>
+                    <td>
+                        <b>CourseName</b>
+                    </td>
+                    <td>
+                        <b>CollegeName</b>
+                    </td>
+                    <td>
+                        <b>CourseLength</b>
+                    </td>
+                    <td>
+                        <b>NumofLevels</b>
+                    </td>
+                    <td>
+                        <b>CampusOffering</b>
+                    </td>
+                    <td>
+                        <b>DLINumber</b>
+                    </td>
+                </tr>
+                <tr ng-repeat="Cour in course  | filter:searchText">
+                    <td>
+                        {{Cour.CourseID}}
+                    </td>
+                    <td>
+                        {{Cour.CourseName}}
+                    </td>
+                    <td>
+                        {{Cour.CollegeName}}
+                    </td>
+                    <td>
+                        {{Cour.CourseLength}}
+                    </td>
+                    <td>
+                        {{Cour.NumofLevels}}
+                    </td>
+
+                    <td>
+                        {{Cour.CampusOffering}}
+                    </td>
+
+                    <td>
+                        {{Cour.DLINumber}}
+                    </td>
+                </tr>
+            </table>
+
+
+        </div>
+       
+    </div>
+
+</div>
