@@ -1,20 +1,137 @@
 ﻿
 <head runat="server">
     <style>
-        .btn-space {
-            margin-left: -5%;
-            background-color: cornflowerblue;
-            font-size: large;
+        body, h1, h2, h3, h4, h5, h6 {
+            font-family: "Lato", sans-serif
+        }
+
+        .w3-bar, h1, button {
+            font-family: "Montserrat", sans-serif
+        }
+
+        .fa-anchor, .fa-coffee {
+            font-size: 200px
         }
     </style>
 </head>
-
 <body>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="~/Scripts/angular.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.22/pdfmake.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+
+    <!-- Navbar -->
+    <div ng-app="InstitutrFinderApplication">
+        <div ng-controller="Collegecntrl" ng-init="GetAllData()" class="divList">
+            <div class="w3-top">
+                <div class="w3-bar w3-red w3-card w3-left-align w3-large">
+                    <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-red"></a>
+                    <a href="#" class="w3-bar-item w3-button w3-padding-large w3-white">Home</a>
+                    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" ng-click="printDiv('CollegeData');">Print Data</a>
+                    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" ng-click="exportdiv('CollegeData')">Export Data</a>
+                    <input class="w3-bar-item w3-button w3-padding-large w3-white" type="search" placeholder="Search" aria-label="Search" ng-model="searchText" background="white">
+                </div>
+            </div>
+
+            <!-- Header -->
+            <header class="w3-container w3-red w3-center" style="padding:128px 16px">
+                <h1 class="w3-margin w3-jumbo">Institute Finder</h1>
+                <p class="w3-xlarge">Find Institute Here</p>
+            </header>
+
+            <!-- First Grid -->
+            <div class="w3-row-padding w3-padding-64 w3-container">
+                <div name="CollegeData" id="CollegeData">
+
+                    <table cellpadding="12" class="table table-bordered table-hover">
+                        <tr>
+                            <td>
+                                <b>ID</b>
+                            </td>
+                            <td>
+                                <b>College Name</b>
+                            </td>
+                            <td>
+                                <b>DLINumber</b>
+                            </td>
+                            <td>
+                                <b>Address</b>
+                            </td>
+                            <td>
+                                <b>City</b>
+                            </td>
+                            <td>
+                                <b>Province</b>
+                            </td>
+                            <td>
+                                <b>PostalCode</b>
+                            </td>
+                            <td>
+                                <b>Contact</b>
+                            </td>
+                            <td>
+                                <b>Courses</b>
+                            </td>
+                            <td>
+                                <b>Campuse</b>
+                            </td>
+                        </tr>
+                        <tr ng-repeat="Clg in college  | filter:searchText" ng-click="setSelectedRow(Clg.DLINumber)" ng-class="{selected: vote.id === idSelectedVote}">
+                            <td>
+                                {{Clg.CollegeID}}
+                            </td>
+                            <td>
+                                {{Clg.CollegeName}}
+                            </td>
+                            <td>
+                                {{Clg.DLINumber}}
+                            </td>
+                            <td>
+                                {{Clg.Address}}
+                            </td>
+                            <td>
+                                {{Clg.City}}
+                            </td>
+
+                            <td>
+                                {{Clg.Province}}
+                            </td>
+
+                            <td>
+                                {{Clg.PostalCode}}
+                            </td>
+
+                            <td>
+                                {{Clg.ContactDetails}}
+                            </td>
+
+                            <td>
+                                {{Clg.NumOfCourses}}
+                            </td>
+
+                            <td>
+                                {{Clg.NumOfCampus}}
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+            </div>
+
+            <div class="w3-container w3-black w3-center w3-opacity w3-padding-64">
+                <h4>About Us</h4>
+                <h6 style="text-align:justify">
+                 Institute Finder application helps the student who wants to come to Canada for their higher studies. Using a web-based solution, the student can access all college data and university data using one solution. They can search college, university, and courses based on their criteria such as type, of course, city of college, no of levels in course, using DLI Number, and many more. In case if students want to use filter data for future use/reference then they can use two different functionalities of the web application. Using Export data, students can export the filter data in pdf format and save it for future references. Using Print Data, students can print the filter data for future use and reference.
+                </h6>
+            </div>
+        </div>
+    </div>
+
     <script type="text/javascript">
 
 
@@ -39,7 +156,7 @@
             $scope.setSelectedRow = function (idSelectedVote) {
                 $scope.idSelectedVote = idSelectedVote;
                 //$location.path('/Home/Course.cshtml');
-                $window.location.href = '/Home/Course?ID=' + idSelectedVote ;
+                $window.location.href = '/Home/Course?ID=' + idSelectedVote;
             };
 
             //print div data
@@ -74,156 +191,7 @@
         });
 
     </script>
+
+
 </body>
 
-<div ng-app="InstitutrFinderApplication">
-    <div ng-controller="Collegecntrl" ng-init="GetAllData()" class="divList">
-
-
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="#">Institute Finder</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="#">About US <span class="sr-only">(current)</span></a>
-                    </li>
-
-                    <li class="nav-item active">
-                        <a class="nav-link" href="#" ng-click="printDiv('CollegeData');">Print Data <span class="sr-only">(current)</span></a>
-                    </li>
-
-                    <li class="nav-item active">
-                        <a class="nav-link" href="#" ng-click="exportdiv('CollegeData')">Export Data <span class="sr-only">(current)</span></a>
-                    </li>
-
-                </ul>
-                <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" ng-model="searchText">
-                </form>
-            </div>
-        </nav>
-
-        <div><br /> <br /></div>
-
-        <div name="CollegeData" id="CollegeData">
-
-            <table cellpadding="12" class="table table-bordered table-hover">
-                <tr>
-                    <td>
-                        <b>CollegeID</b>
-                    </td>
-                    <td>
-                        <b>CollegeName</b>
-                    </td>
-                    <td>
-                        <b>DLINumber</b>
-                    </td>
-                    <td>
-                        <b>Address</b>
-                    </td>
-                    <td>
-                        <b>City</b>
-                    </td>
-                    <td>
-                        <b>Province</b>
-                    </td>
-                    <td>
-                        <b>PostalCode</b>
-                    </td>
-                    <td>
-                        <b>ContactDetails</b>
-                    </td>
-                    <td>
-                        <b>NumOfCourses</b>
-                    </td>
-                    <td>
-                        <b>NumOfCampus</b>
-                    </td>
-                </tr>
-                <tr ng-repeat="Clg in college  | filter:searchText" ng-click="setSelectedRow(Clg.DLINumber)" ng-class="{selected: vote.id === idSelectedVote}">
-                    <td>
-                        {{Clg.CollegeID}}
-                    </td>
-                    <td>
-                        {{Clg.CollegeName}}
-                    </td>
-                    <td>
-                        {{Clg.DLINumber}}
-                    </td>
-                    <td>
-                        {{Clg.Address}}
-                    </td>
-                    <td>
-                        {{Clg.City}}
-                    </td>
-
-                    <td>
-                        {{Clg.Province}}
-                    </td>
-
-                    <td>
-                        {{Clg.PostalCode}}
-                    </td>
-
-                    <td>
-                        {{Clg.ContactDetails}}
-                    </td>
-
-                    <td>
-                        {{Clg.NumOfCourses}}
-                    </td>
-
-                    <td>
-                        {{Clg.NumOfCampus}}
-                    </td>
-                </tr>
-            </table>
-
-        </div>
-        @*<div class="form-horizontal" role="form">
-                <div class="container">
-                    <div class="row">
-                        <h2>
-                            <span id="spn">Add New Employee</span>
-                        </h2>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-6 col-lg-4">
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">Name:</label>
-                                <div class="col-md-8">
-                                    <input type="text" class="form-control" id="inputEmail" placeholder="Name" ng-model="EmpName">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 col-lg-4">
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">City:</label>
-                                <div class="col-md-8">
-                                    <input type="text" class="form-control" id="inputPassword" placeholder="City" ng-model="EmpCity">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 col-lg-4">
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">Age:</label>
-                                <div class="col-md-8">
-                                    <input type="text" class="form-control" id="inputLabel3" placeholder="Age" ng-model="EmpAge">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-6 col-lg-4">
-                            <input type="button" id="btnSave" class="form-control btn-space" value="Submit" ng-click="InsertData()" />
-                        </div>
-                    </div>
-                </div>
-            </div>*@
-    </div>
-
-</div>
